@@ -1,0 +1,98 @@
+body {
+  width: 30rem;
+  min-height: 2em;
+  background-color: lightgray;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+input[type="number"] {
+  float: right;
+  width: 15%;
+  padding: 6px 10px;
+  margin: 8px 0;
+  height: 2em;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin: 0px;
+}
+
+input[type="checkbox"] {
+  float: right;
+  width: 10%;
+  padding: 6px 10px;
+  margin: 8px 0;
+  height: 2em;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin: 0px;
+}
+
+button#highlight {
+  float: right;
+  width: 10%;
+  padding: 6px 10px;
+  margin: 8px 0;
+  height: 2em;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin: 0px;
+}
+
+input[type="search"] {
+  float: left;
+  width: 75%;
+  padding: 6px 10px;
+  margin: 8px 0;
+  height: 2em;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin: 0px;
+}
+
+input:focus {
+  outline: none;
+}
+
+ul ul {
+  border: 1px solid black;
+}
+
+body > ul > li:hover {
+  border: 1px solid black;
+  background-color: skyblue;
+}
+
+li li {
+  padding: 0.25rem;
+  /*border-top: 1px solid red;*/
+  border-top: 1px solid black;
+}
+
+/*
+li li:nth-child(odd) {
+  background: #dcdcdc;
+}
+*/
+
+h3,
+h4 {
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin: 0;
+}

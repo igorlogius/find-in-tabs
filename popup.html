@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<head>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <template id="li_template">
+    <li>
+      <a>
+        <h4 class="title"></h4>
+        <p class="result"></p>
+      </a>
+    </li>
+  </template>
+
+  <fieldset>
+    <input
+      id="searchField"
+      type="search"
+      placeholder="Find in Tabs"
+      autofocus
+    />
+    <input id="caseSensitive" type="checkbox" title="case sensitive" />
+
+    <input
+      id="maxhits"
+      type="number"
+      min="1"
+      value="3"
+      max="99"
+      title="max results"
+    />
+  </fieldset>
+
+  <ul id="resultlist"></ul>
+
+  <small>
+    <div style="padding: 3px; margin: 3px; text-size: small" id="note"></div>
+  </small>
+
+  <script src="popup.js"></script>
+</body>

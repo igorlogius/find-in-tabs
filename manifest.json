@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+  "name": "Find In Tabs",
+  "author": "igorlogius",
+  "homepage_url": "https://github.com/igorlogius/find-in-tabs",
+  "description": "Quickly find text in all your open and active tabs",
+  "icons": {
+    "128": "icon.png"
+  },
+  "browser_action": {
+    "default_area": "navbar",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["storage", "find", "<all_urls>", "tabs"],
+  "content_scripts": [
+    {
+      "js": ["content.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F"
+      }
+    }
+  },
+  "version": "1.0.1"
+}

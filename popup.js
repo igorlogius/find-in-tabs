@@ -1,19 +1,32 @@
 (async () => {
-  function encodeHTMLEntities(text) {
-    var textArea = document.createElement("textarea");
-    textArea.innerText = text;
-    return textArea.innerHTML;
-  }
-
   const template = document.getElementById("li_template");
   const elements = new Set();
   // const collator = new Intl.Collator();
   const styleElementHidden = "none";
   const styleElementDisplay = "block";
 
+  let last_searchStr = "";
+
   const tabs = await browser.tabs.query({
     url: ["<all_urls>"],
   });
+
+  async function getFromStorage(type, id, fallback) {
+    let tmp = await browser.storage.local.get(id);
+    return typeof tmp[id] === type ? tmp[id] : fallback;
+  }
+
+  async function setToStorage(id, value) {
+    let obj = {};
+    obj[id] = value;
+    return browser.storage.local.set(obj);
+  }
+
+  function encodeHTMLEntities(text) {
+    var textArea = document.createElement("textarea");
+    textArea.innerText = text;
+    return textArea.innerHTML;
+  }
 
   async function createTabList() {
     //tabs.sort((a, b) => collator.compare(a.title, b.title));
@@ -67,7 +80,6 @@
         }
         /*
         setTimeout(() => {
-            console.debug('focus search input');
         document.getElementById('searchField').focus();
         }, 1000);
         */
@@ -98,6 +110,7 @@
 
   async function handeInputChange(event) {
     let searchedVal = document.getElementById("searchField").value;
+    setToStorage("lastsearch", searchedVal);
     let maxhits = document.getElementById("maxhits").value;
     let caseSensitive = document.getElementById("caseSensitive").checked;
     if (
@@ -205,7 +218,6 @@
           for (const fe of document.querySelectorAll("[tabIndex]")) {
             if (fe.style.display !== styleElementHidden) {
               fe.querySelector("a").click();
-              //console.debug(fe.innerHTML);
               return;
             }
           }
@@ -246,5 +258,11 @@
   await createTabList();
   createTextFieldEventListener();
   createDocumentListener();
+
+  last_searchStr = await getFromStorage("string", "lastsearch", "");
+  if (last_searchStr !== "") {
+    document.getElementById("searchField").value = last_searchStr;
+  }
+
   //
 })();

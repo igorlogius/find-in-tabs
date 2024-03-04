@@ -37,6 +37,7 @@
       // handle click or arrow-keys
       element.querySelector("a").addEventListener("click", async () => {
         browser.tabs.highlight({ windowId: tab.windowId, tabs: [tab.index] });
+        //browser.tabs.update(tab.id, {active: true});
         let searchedVal = document.getElementById("searchField").value;
         let result = await browser.find.find(searchedVal, {
           tabId: tab.id,
@@ -46,13 +47,31 @@
           await browser.find.highlightResults({ tabId: tab.id });
           // todo scroll to first result
           //vscrollOffset = result.rectData[0]
-          const vScrollOffset =
-            result.rectData[0].rectsAndTexts.rectList[0].top;
+          try {
+            const vScrollOffset =
+              result.rectData[0].rectsAndTexts.rectList[0].top;
 
-          browser.tabs.executeScript(tab.id, {
-            code: `     window.scrollTo(0, ${vScrollOffset})`,
-          });
+            await browser.tabs.sendMessage(tab.id, {
+              cmd: "scroll",
+              yoffset: vScrollOffset,
+            });
+
+            /*
+            await browser.tabs.executeScript(tab.id, {
+              code: `window.scrollTo(0, ${vScrollOffset})`,
+            });
+            */
+          } catch (e) {
+            //console.warn(e);
+          }
         }
+        /*
+        setTimeout(() => {
+            console.debug('focus search input');
+        document.getElementById('searchField').focus();
+        }, 1000);
+        */
+        window.close();
       });
       /*
       element.addEventListener("keyup", function (event) {
@@ -99,6 +118,7 @@
       if (searchedVal.length > 2) {
         try {
           response = await browser.tabs.sendMessage(tab.id, {
+            cmd: "search",
             message: searchedVal,
             maxhits: maxhits,
             caseSensitive: caseSensitive,
@@ -179,6 +199,16 @@
         if (event.key === "ArrowDown") {
           let tmp = document.getElementById("maxhits").value;
           document.getElementById("maxhits").value = tmp - 1;
+        }
+        if (event.key === "Enter") {
+          // todo jump to first result
+          for (const fe of document.querySelectorAll("[tabIndex]")) {
+            if (fe.style.display !== styleElementHidden) {
+              fe.querySelector("a").click();
+              //console.debug(fe.innerHTML);
+              return;
+            }
+          }
         }
       });
   }

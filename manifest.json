@@ -11,7 +11,7 @@
     "default_area": "navbar",
     "default_popup": "popup.html"
   },
-  "permissions": ["storage", "find", "<all_urls>", "tabs"],
+  "permissions": ["storage", "find", "tabs"],
   "content_scripts": [
     {
       "js": ["content.js"],
@@ -25,5 +25,5 @@
       }
     }
   },
-  "version": "1.0.1"
+  "version": "1.0.2"
 }

@@ -1,27 +1,34 @@
 // This sript is executed on each tab while typing the search
 
 let cached_page_text = "";
+let timerID = null;
 
 browser.runtime.onMessage.addListener((request, sender) => {
-  console.debug(request);
-  const text = cached_page_text;
-  // get Idxs
-  let idxs = getIdxsOf(
-    request.message,
-    text,
-    request.caseSensitive,
-    request.maxhits
-  );
-  let hits = [];
-  for (const idx of idxs) {
-    let left = text.slice(idx - 22, idx);
-    let right = text.slice(
-      idx + request.message.length,
-      idx + request.message.length + 22
-    );
-    hits.push({ left, right });
+  if (request.cmd === "scroll") {
+    window.scrollTo(0, request.yoffset);
+    return;
   }
-  return Promise.resolve({ hits });
+  if (request.cmd === "search") {
+    //console.debug(request);
+    const text = cached_page_text;
+    // get Idxs
+    let idxs = getIdxsOf(
+      request.message,
+      text,
+      request.caseSensitive,
+      request.maxhits
+    );
+    let hits = [];
+    for (const idx of idxs) {
+      let left = text.slice(idx - 22, idx);
+      let right = text.slice(
+        idx + request.message.length,
+        idx + request.message.length + 22
+      );
+      hits.push({ left, right });
+    }
+    return Promise.resolve({ hits });
+  }
 });
 
 function getIdxsOf(searchStr, str, caseSensitive, maxhits) {
@@ -55,8 +62,29 @@ function updateCache() {
     document.body.innerText.replace(/\s+/g, " ");
 }
 
+/*
 // regular updates every 15 seconds
 setInterval(updateCache, 15000);
 
 // first time afer 3 seconds
 setTimeout(updateCache, 3000);
+*/
+
+function delayed_onChange() {
+  clearTimeout(timerID);
+  timerID = setTimeout(updateCache, 500);
+}
+
+function init() {
+  if (document.body) {
+    new MutationObserver(delayed_onChange).observe(document.body, {
+      attributes: false,
+      childList: true,
+      subtree: true,
+    });
+    delayed_onChange();
+  }
+}
+
+// inital delay
+init();

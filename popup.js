@@ -207,10 +207,25 @@
 
   /**/
   function createDocumentListener() {
+    // prevent cursor from jumping to the front and back
+    document.getElementById("searchField").addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "ArrowUp") {
+          event.preventDefault();
+          return false;
+        }
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          return false;
+        }
+      },
+      false
+    );
     // change max hits via arrow keys
-    document
-      .getElementById("searchField")
-      .addEventListener("keyup", function (event) {
+    document.getElementById("searchField").addEventListener(
+      "keyup",
+      function (event) {
         if (event.key === "ArrowUp") {
           let tmp = parseInt(document.getElementById("maxhits").value);
           document.getElementById("maxhits").value = tmp + 1;
@@ -218,17 +233,21 @@
         if (event.key === "ArrowDown") {
           let tmp = document.getElementById("maxhits").value;
           document.getElementById("maxhits").value = tmp - 1;
+          event.target.focus();
         }
         if (event.key === "Enter") {
           // todo jump to first result
           for (const fe of document.querySelectorAll("[tabIndex]")) {
             if (fe.style.display !== styleElementHidden) {
               fe.querySelector("a").click();
+              event.target.focus();
               return;
             }
           }
         }
-      });
+      },
+      false
+    );
   }
   /**/
 

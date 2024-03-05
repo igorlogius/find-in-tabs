@@ -9,15 +9,22 @@ browser.runtime.onMessage.addListener((request, sender) => {
     return;
   }
   if (request.cmd === "search") {
-    //console.debug(request);
-    const text = cached_page_text;
+    let searchStr = request.message;
+    let text = "";
+    if (!request.accentSensitive) {
+      // ignore diracritics in searchbox too
+      searchStr = searchStr.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      text = cached_page_text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    } else {
+      text = cached_page_text;
+    }
+
+    if (!request.caseSensitive) {
+      text = text.toLowerCase();
+      searchStr = searchStr.toLowerCase();
+    }
     // get Idxs
-    let idxs = getIdxsOf(
-      request.message,
-      text,
-      request.caseSensitive,
-      request.maxhits
-    );
+    let idxs = getIdxsOf(searchStr, text, request.maxhits);
     let hits = [];
     for (const idx of idxs) {
       let left = text.slice(idx - 22, idx);
@@ -31,7 +38,32 @@ browser.runtime.onMessage.addListener((request, sender) => {
   }
 });
 
-function getIdxsOf(searchStr, str, caseSensitive, maxhits) {
+function stripAccents(str) {
+  const rExps = [
+    { re: /[\xC0-\xC6]/g, ch: "A" },
+    { re: /[\xE0-\xE6]/g, ch: "a" },
+    { re: /[\xC8-\xCB]/g, ch: "E" },
+    { re: /[\xE8-\xEB]/g, ch: "e" },
+    { re: /[\xCC-\xCF]/g, ch: "I" },
+    { re: /[\xEC-\xEF]/g, ch: "i" },
+    { re: /[\xD2-\xD6]/g, ch: "O" },
+    { re: /[\xF2-\xF6]/g, ch: "o" },
+    { re: /[\xD9-\xDC]/g, ch: "U" },
+    { re: /[\xF9-\xFC]/g, ch: "u" },
+    { re: /[\xD1]/g, ch: "N" },
+    { re: /[\xF1]/g, ch: "n" },
+  ];
+
+  str = str.normalize();
+
+  for (const rexp of rExps) {
+    str = str.replace(rexp.re, rexp.ch);
+  }
+
+  return str;
+}
+
+function getIdxsOf(searchStr, str, maxhits) {
   var searchStrLen = searchStr.length;
   if (searchStrLen < 3) {
     return [];
@@ -39,10 +71,6 @@ function getIdxsOf(searchStr, str, caseSensitive, maxhits) {
   var startIndex = 0,
     index,
     idxs = [];
-  if (!caseSensitive) {
-    str = str.toLowerCase();
-    searchStr = searchStr.toLowerCase();
-  }
   while ((index = str.indexOf(searchStr, startIndex)) > -1) {
     idxs.push(index);
     startIndex = index + searchStrLen;
@@ -61,14 +89,6 @@ function updateCache() {
     " " +
     document.body.innerText.replace(/\s+/g, " ");
 }
-
-/*
-// regular updates every 15 seconds
-setInterval(updateCache, 15000);
-
-// first time afer 3 seconds
-setTimeout(updateCache, 3000);
-*/
 
 function delayed_onChange() {
   clearTimeout(timerID);

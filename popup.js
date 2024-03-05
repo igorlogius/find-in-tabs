@@ -55,6 +55,7 @@
         let result = await browser.find.find(searchedVal, {
           tabId: tab.id,
           includeRectData: true,
+          matchDiacritics: document.getElementById("accentSensitive").checked,
         });
         if (result.count > 0) {
           await browser.find.highlightResults({ tabId: tab.id });
@@ -107,22 +108,26 @@
   let last_searchField_value = "";
   let last_maxhits_value = "";
   let last_caseSensitive_value = "";
+  let last_accentSensitive_value = "";
 
   async function handeInputChange(event) {
     let searchedVal = document.getElementById("searchField").value;
     setToStorage("lastsearch", searchedVal);
     let maxhits = document.getElementById("maxhits").value;
     let caseSensitive = document.getElementById("caseSensitive").checked;
+    let accentSensitive = document.getElementById("accentSensitive").checked;
     if (
       last_searchField_value === searchedVal &&
       last_maxhits_value === maxhits &&
-      last_caseSensitive_value === caseSensitive
+      last_caseSensitive_value === caseSensitive &&
+      last_accentSensitive_value === accentSensitive
     ) {
       return;
     }
     last_searchField_value = searchedVal;
     last_maxhits_value = maxhits;
     last_caseSensitive_value = caseSensitive;
+    last_accentSensitive_value = accentSensitive;
 
     let noresult = true;
     let tabIdx = 1;
@@ -135,6 +140,7 @@
             message: searchedVal,
             maxhits: maxhits,
             caseSensitive: caseSensitive,
+            accentSensitive: accentSensitive,
           });
         } catch (e) {
           console.error(e);

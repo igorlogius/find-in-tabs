@@ -86,12 +86,6 @@
         */
         window.close();
       });
-      /*
-      element.addEventListener("keyup", function (event) {
-        if (event.key === "ArrowDown") handleKeyDown(event);
-        if (event.key === "ArrowUp") handleKeyUp(event);
-      });
-        */
 
       elements.add(element);
       element.style.display = styleElementHidden; // hide all elements
@@ -102,7 +96,7 @@
   function createTextFieldEventListener() {
     setInterval(function () {
       handeInputChange();
-    }, 250);
+    }, 500);
   }
 
   let last_searchField_value = "";
@@ -112,10 +106,23 @@
 
   async function handeInputChange(event) {
     let searchedVal = document.getElementById("searchField").value;
-    setToStorage("lastsearch", searchedVal);
     let maxhits = document.getElementById("maxhits").value;
     let caseSensitive = document.getElementById("caseSensitive").checked;
     let accentSensitive = document.getElementById("accentSensitive").checked;
+
+    if (last_searchField_value !== searchedVal) {
+      setToStorage("lastsearch", searchedVal);
+    }
+    if (last_maxhits_value !== maxhits) {
+      setToStorage("lastmaxhits", maxhits);
+    }
+    if (last_caseSensitive_value !== caseSensitive) {
+      setToStorage("lastcaseSensitive", caseSensitive);
+    }
+    if (last_accentSensitive_value !== accentSensitive) {
+      setToStorage("lastaccentSensitive", accentSensitive);
+    }
+
     if (
       last_searchField_value === searchedVal &&
       last_maxhits_value === maxhits &&
@@ -232,7 +239,9 @@
         }
         if (event.key === "ArrowDown") {
           let tmp = document.getElementById("maxhits").value;
-          document.getElementById("maxhits").value = tmp - 1;
+          if (tmp > 1) {
+            document.getElementById("maxhits").value = tmp - 1;
+          }
           event.target.focus();
         }
         if (event.key === "Enter") {
@@ -287,6 +296,20 @@
   last_searchStr = await getFromStorage("string", "lastsearch", "");
   if (last_searchStr !== "") {
     document.getElementById("searchField").value = last_searchStr;
+  }
+  let lastmaxhits = await getFromStorage("integer", "lastmaxhits", 3);
+  document.getElementById("maxhits").value = lastmaxhits;
+
+  if (await getFromStorage("boolean", "lastcaseSensitive", false)) {
+    document.getElementById("caseSensitive").setAttribute("checked", "");
+  } else {
+    document.getElementById("caseSensitive").removeAttribute("checked");
+  }
+
+  if (await getFromStorage("boolean", "lastaccentSensitive", false)) {
+    document.getElementById("accentSensitive").setAttribute("checked", "");
+  } else {
+    document.getElementById("accentSensitive").removeAttribute("checked");
   }
 
   //

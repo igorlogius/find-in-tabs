@@ -7,11 +7,19 @@
   "icons": {
     "128": "icon.png"
   },
+  "background": {
+    "scripts": ["background.js"]
+  },
   "browser_action": {
     "default_area": "navbar",
     "default_popup": "popup.html"
   },
-  "permissions": ["storage", "find", "tabs"],
+  "sidebar_action": {
+    "default_icon": "icon.png",
+    "open_at_install": false, 
+    "default_panel": "popup.html"
+  },
+  "permissions": ["menus", "storage", "find", "tabs"],
   "content_scripts": [
     {
       "js": ["content.js"],
@@ -25,5 +33,5 @@
       }
     }
   },
-  "version": "1.0.5"
+  "version": "1.0.6"
 }

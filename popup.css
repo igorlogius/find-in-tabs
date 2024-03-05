@@ -1,6 +1,5 @@
 body {
-  width: 30rem;
-  min-height: 2em;
+  padding: 0.5em;
   background-color: lightgray;
 }
 
@@ -10,56 +9,32 @@ ul {
   margin: 0;
 }
 
+fieldset {
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  flex-flow: row wrap;
+}
+
 input[type="number"] {
-  float: right;
+  flex-grow: 1;
   width: 15%;
-  padding: 6px 10px;
-  margin: 8px 0;
-  height: 2em;
-  display: inline-block;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  margin: 0px;
+  text-align: center;
 }
 
 input[type="checkbox"] {
-  float: right;
-  width: 10%;
-  padding: 6px 10px;
-  margin: 8px 0;
-  height: 2em;
-  display: inline-block;
+  flex-grow: 0;
+  min-width: 10%;
+  margin: 0;
+  padding: 0;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  margin: 0px;
-}
-
-button#highlight {
-  float: right;
-  width: 10%;
-  padding: 6px 10px;
-  margin: 8px 0;
-  height: 2em;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  margin: 0px;
 }
 
 input[type="search"] {
-  float: left;
-  width: 65%;
+  flex-grow: 100;
   padding: 6px 10px;
-  margin: 8px 0;
-  height: 2em;
-  display: inline-block;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  margin: 0px;
 }
 
 input:focus {

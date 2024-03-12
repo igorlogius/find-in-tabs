@@ -4,8 +4,9 @@ body {
 }
 
 ul {
-  list-style-type: none;
+  /*list-style-type: none; */
   padding: 0;
+  padding-left: 15px;
   margin: 0;
 }
 
@@ -42,18 +43,23 @@ input:focus {
 }
 
 ul ul {
-  border: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 body > ul > li:hover {
-  border: 1px solid black;
+  /*border: 1px solid black;*/
+  background-color: skyblue;
+}
+
+body > ul > li:focus {
+  /*border: 1px solid black;*/
   background-color: skyblue;
 }
 
 li li {
-  padding: 0.25rem;
+  padding: 0;
   /*border-top: 1px solid red;*/
-  border-top: 1px solid black;
+  /*border-top: 1px solid black;*/
 }
 
 /*

@@ -2,29 +2,35 @@
 <head>
   <link rel="stylesheet" href="popup.css" />
 </head>
-<body>
+<body class="browser-style">
   <template id="li_template">
-    <li>
+    <li class="browser-style">
       <a>
-        <h4 class="title"></h4>
-        <p class="result"></p>
+        <h4 class="title browser-style"></h4>
+        <p class="result browser-style"></p>
       </a>
     </li>
   </template>
 
   <fieldset>
     <input
+      class=""
       id="searchField"
       type="search"
       placeholder="Find in Tabs"
       autofocus
     />
 
-    <input id="maxhits" type="number" min="1" title="Max Results" />
+    <input class="" id="maxhits" type="number" min="1" title="Max Results" />
 
-    <input id="caseSensitive" type="checkbox" title="Match Case" />
+    <input class="" id="caseSensitive" type="checkbox" title="Match Case" />
 
-    <input id="accentSensitive" type="checkbox" title="Match Diacritics" />
+    <input
+      class=""
+      id="accentSensitive"
+      type="checkbox"
+      title="Match Diacritics"
+    />
   </fieldset>
 
   <ul id="resultlist"></ul>

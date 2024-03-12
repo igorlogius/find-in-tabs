@@ -48,6 +48,11 @@
       //element.querySelector(".result").innerText = tab.url.slice(0, 80);
 
       // handle click or arrow-keys
+      element.addEventListener("keydown", async (event) => {
+        if (event.key === "Enter") {
+          event.target.querySelector("a").click();
+        }
+      });
       element.querySelector("a").addEventListener("click", async () => {
         browser.tabs.highlight({ windowId: tab.windowId, tabs: [tab.index] });
         //browser.tabs.update(tab.id, {active: true});
@@ -131,6 +136,15 @@
     ) {
       return;
     }
+    /*
+    console.debug(
+      "handeInputChange",
+      searchedVal,
+      maxhits,
+      caseSensitive,
+      accentSensitive
+    );
+    */
     last_searchField_value = searchedVal;
     last_maxhits_value = maxhits;
     last_caseSensitive_value = caseSensitive;

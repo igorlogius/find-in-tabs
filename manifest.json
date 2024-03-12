@@ -16,7 +16,7 @@
   },
   "sidebar_action": {
     "default_icon": "icon.png",
-    "open_at_install": false, 
+    "open_at_install": false,
     "default_panel": "popup.html"
   },
   "permissions": ["menus", "storage", "find", "tabs"],
@@ -33,5 +33,5 @@
       }
     }
   },
-  "version": "1.0.6"
+  "version": "1.0.7"
 }

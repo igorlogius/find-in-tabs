@@ -8,6 +8,7 @@
   let last_searchStr = "";
 
   const tabs = await browser.tabs.query({
+    currentWindow: true,
     url: ["<all_urls>"],
   });
 

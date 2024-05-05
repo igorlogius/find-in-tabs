@@ -1,5 +1,7 @@
 Quickly find text in all open and active tabs
 
+### [Click here to report a bug, make a suggestion or ask a question](https://github.com/igorlogius/igorlogius/issues/new/choose)
+
 <b>Short Demo Video:</b>
 
 https://github.com/igorlogius/find-in-tabs/assets/67047467/cb5cecb7-b8da-49c6-bf58-6318ef1da236

@@ -1,6 +1,11 @@
 body {
   padding: 0.5em;
   background-color: lightgray;
+  width: 640px;
+}
+
+#searchprogress {
+  width: 100%;
 }
 
 ul {

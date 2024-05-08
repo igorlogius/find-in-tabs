@@ -10,6 +10,8 @@
   const tabs = await browser.tabs.query({
     currentWindow: true,
     url: ["<all_urls>"],
+    status: "complete",
+    discarded: false,
   });
 
   async function getFromStorage(type, id, fallback) {
@@ -37,6 +39,7 @@
 
     let tabIdx = 1;
     for (const tab of tabs) {
+      //
       const element = template.content.firstElementChild.cloneNode(true);
 
       // jump index
@@ -153,7 +156,12 @@
 
     let noresult = true;
     let tabIdx = 1;
+    document.getElementById("searchprogress").setAttribute("max", tabs.length);
+    let counter = 0;
     for (const tab of tabs) {
+      document
+        .getElementById("searchprogress")
+        .setAttribute("value", (counter += 1));
       let response;
       if (searchedVal.length > 2) {
         try {
@@ -219,7 +227,8 @@
     }
 
     if (searchedVal.length < 3) {
-      document.getElementById("note").innerText = "not enough characters ( 3+ required )";
+      document.getElementById("note").innerText =
+        "not enough characters ( 3+ required )";
     } else if (searchedVal.length > 2 && noresult) {
       document.getElementById("note").innerText = "no results";
     } else {
@@ -304,6 +313,7 @@
 */
 
   //
+
   await createTabList();
   createTextFieldEventListener();
   createDocumentListener();
@@ -328,6 +338,8 @@
   }
 
   //
-  document.getElementById('searchField').focus();
-  document.getElementById('searchField').select();
+  setTimeout(() => {
+    document.getElementById("searchField").focus();
+    document.getElementById("searchField").select();
+  }, 800);
 })();

@@ -219,7 +219,7 @@
     }
 
     if (searchedVal.length < 3) {
-      document.getElementById("note").innerText = "not enough characters";
+      document.getElementById("note").innerText = "not enough characters ( 3+ required )";
     } else if (searchedVal.length > 2 && noresult) {
       document.getElementById("note").innerText = "no results";
     } else {
@@ -328,4 +328,6 @@
   }
 
   //
+  document.getElementById('searchField').focus();
+  document.getElementById('searchField').select();
 })();

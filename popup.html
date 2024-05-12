@@ -12,7 +12,7 @@
     </li>
   </template>
 
-  <fieldset>
+  <fieldset id="fsinput">
     <input
       class=""
       id="searchField"
@@ -37,14 +37,14 @@
       type="checkbox"
       title="Match Diacritics"
     />
-  </fieldset>
 
-  <progress id="searchprogress" value="0" max="1"></progress>
+    <progress id="searchprogress" value="0" max="1"></progress>
+  </fieldset>
 
   <ul id="resultlist"></ul>
 
   <small>
-    <div style="padding: 3px; margin: 3px; text-size: small" id="note"></div>
+    <div style="padding: 0px; margin: 3px; text-size: small" id="note"></div>
   </small>
 
   <script src="popup.js"></script>

@@ -2,10 +2,36 @@ body {
   padding: 0.5em;
   background-color: lightgray;
   width: 500px;
+  /*max-height:400px;*/
+  /*overflow: hidden;*/
+}
+
+#resultlist {
+  /*height: 300px;*/
+  overflow-y: scroll;
+  border: 1px solid gray;
+  margin-top: 80px;
+}
+
+#fsinput {
+  position: fixed;
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+  top: 0px;
+  left: 0px;
+  height: 20px;
+  width: 500px;
+  /*background-color: yellow;*/
+  background-color: lightgray;
+  padding-bottom: 30px;
 }
 
 #searchprogress {
-  width: 100%;
+  position: fixed;
+  width: 500px;
+  top: 60px;
+  left: 15px;
 }
 
 ul {

@@ -57,10 +57,10 @@
           event.target.querySelector("a").click();
         }
       });
-      element.querySelector("a").addEventListener("click", async () => {
+      element.querySelector("a").addEventListener("click", async (el) => {
         browser.tabs.highlight({ windowId: tab.windowId, tabs: [tab.index] });
         //browser.tabs.update(tab.id, {active: true});
-        let searchedVal = document.getElementById("searchField").value;
+        let searchedVal = el.target.querySelector("ul li b").innerText;
         let result = await browser.find.find(searchedVal, {
           tabId: tab.id,
           includeRectData: true,
@@ -112,12 +112,14 @@
   let last_maxhits_value = "";
   let last_caseSensitive_value = "";
   let last_accentSensitive_value = "";
+  let last_regexmode_value = "";
 
   async function handeInputChange(event) {
     let searchedVal = document.getElementById("searchField").value;
     let maxhits = document.getElementById("maxhits").value;
     let caseSensitive = document.getElementById("caseSensitive").checked;
     let accentSensitive = document.getElementById("accentSensitive").checked;
+    let regexmode = document.getElementById("regexmode").checked;
 
     if (last_searchField_value !== searchedVal) {
       setToStorage("lastsearch", searchedVal);
@@ -131,12 +133,24 @@
     if (last_accentSensitive_value !== accentSensitive) {
       setToStorage("lastaccentSensitive", accentSensitive);
     }
+    if (last_regexmode_value !== regexmode) {
+      setToStorage("lastregexmode", regexmode);
+
+      if (regexmode) {
+        document.getElementById("accentSensitive").setAttribute("disabled", "");
+        document.getElementById("caseSensitive").setAttribute("disabled", "");
+      } else {
+        document.getElementById("accentSensitive").removeAttribute("disabled");
+        document.getElementById("caseSensitive").removeAttribute("disabled");
+      }
+    }
 
     if (
       last_searchField_value === searchedVal &&
       last_maxhits_value === maxhits &&
       last_caseSensitive_value === caseSensitive &&
-      last_accentSensitive_value === accentSensitive
+      last_accentSensitive_value === accentSensitive &&
+      last_regexmode_value === regexmode
     ) {
       return;
     }
@@ -146,13 +160,15 @@
       searchedVal,
       maxhits,
       caseSensitive,
-      accentSensitive
+      accentSensitive,
+      regexmode
     );
     */
     last_searchField_value = searchedVal;
     last_maxhits_value = maxhits;
     last_caseSensitive_value = caseSensitive;
     last_accentSensitive_value = accentSensitive;
+    last_regexmode_value = regexmode;
 
     let noresult = true;
     let tabIdx = 1;
@@ -166,7 +182,7 @@
       if (searchedVal.length > 2) {
         try {
           response = await browser.tabs.sendMessage(tab.id, {
-            cmd: "search",
+            cmd: regexmode ? "regexsearch" : "search",
             message: searchedVal,
             maxhits: maxhits,
             caseSensitive: caseSensitive,
@@ -190,16 +206,27 @@
 
         if (response) {
           for (const hit of response.hits) {
-            resulting +=
-              "<li>" +
-              encodeHTMLEntities(hit.left) +
-              "<b><span style='background:#ffcc6c'>" +
-              encodeHTMLEntities(
-                caseSensitive ? searchedVal : searchedVal.toUpperCase()
-              ) +
-              "</span></b>" +
-              encodeHTMLEntities(hit.right) +
-              "</li>";
+            if (regexmode) {
+              resulting +=
+                "<li>" +
+                encodeHTMLEntities(hit.left) +
+                "<b><span style='background:#ffcc6c'>" +
+                encodeHTMLEntities(hit.mid) +
+                "</span></b>" +
+                encodeHTMLEntities(hit.right) +
+                "</li>";
+            } else {
+              resulting +=
+                "<li>" +
+                encodeHTMLEntities(hit.left) +
+                "<b><span style='background:#ffcc6c'>" +
+                encodeHTMLEntities(
+                  caseSensitive ? searchedVal : searchedVal.toUpperCase()
+                ) +
+                "</span></b>" +
+                encodeHTMLEntities(hit.right) +
+                "</li>";
+            }
           }
           if (resulting === "" && searchedVal) {
             e.style.display = styleElementHidden;
@@ -335,6 +362,16 @@
     document.getElementById("accentSensitive").setAttribute("checked", "");
   } else {
     document.getElementById("accentSensitive").removeAttribute("checked");
+  }
+
+  if (await getFromStorage("boolean", "lastregexmode", false)) {
+    document.getElementById("regexmode").setAttribute("checked", "");
+    document.getElementById("accentSensitive").setAttribute("disabled", "");
+    document.getElementById("caseSensitive").setAttribute("disabled", "");
+  } else {
+    document.getElementById("regexmode").removeAttribute("checked");
+    document.getElementById("accentSensitive").removeAttribute("disabled");
+    document.getElementById("caseSensitive").removeAttribute("disabled");
   }
 
   //

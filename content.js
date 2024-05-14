@@ -27,12 +27,27 @@ browser.runtime.onMessage.addListener((request, sender) => {
     let idxs = getIdxsOf(searchStr, text, request.maxhits);
     let hits = [];
     for (const idx of idxs) {
-      let left = text.slice(idx - 22, idx);
+      let left = text.slice(idx - 22 > 0 ? idx - 22 : 0, idx);
       let right = text.slice(
         idx + request.message.length,
         idx + request.message.length + 22
       );
       hits.push({ left, right });
+    }
+    return Promise.resolve({ hits });
+  }
+  if (request.cmd === "regexsearch") {
+    let text = "";
+    let regexStr = request.message;
+    text = cached_page_text;
+    let idxgs = getStartEndIdxs(regexStr, text, request.maxhits);
+
+    let hits = [];
+    for (const idx of idxgs) {
+      let left = text.slice(idx[0] - 22 > 0 ? idx[0] - 22 : 0, idx[0]);
+      let mid = text.slice(idx[0], idx[1]);
+      let right = text.slice(idx[1], idx[1] + 22);
+      hits.push({ left, mid, right });
     }
     return Promise.resolve({ hits });
   }
@@ -63,6 +78,37 @@ function stripAccents(str) {
   return str;
 }
 
+function getStartEndIdxs(regexStr, str, maxhits) {
+  let out_idx_groups = [];
+  try {
+    const regex = new RegExp(regexStr, "dgm");
+
+    let m;
+
+    let stop = false;
+    while ((m = regex.exec(str)) !== null) {
+      // This is necessary to avoid infinite loops with zero-width matches
+      if (m.index === regex.lastIndex) {
+        regex.lastIndex++;
+      }
+      //
+      for (const el of m.indices) {
+        out_idx_groups.push(el);
+        if (out_idx_groups.length >= maxhits) {
+          stop = true;
+          break;
+        }
+      }
+      if (stop) {
+        break;
+      }
+    }
+  } catch (e) {
+    // console.warn(e);
+  }
+  return out_idx_groups;
+}
+
 function getIdxsOf(searchStr, str, maxhits) {
   var searchStrLen = searchStr.length;
   if (searchStrLen < 3) {
@@ -83,10 +129,10 @@ function getIdxsOf(searchStr, str, maxhits) {
 
 function updateCache() {
   cached_page_text =
-    document.URL +
+    /*document.URL +
     " " +
     document.title +
-    " " +
+    " " +*/
     document.body.innerText.replace(/\s+/g, " ");
 }
 

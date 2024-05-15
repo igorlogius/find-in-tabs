@@ -6,7 +6,7 @@ Quickly find text in all open and active tabs
 
 <b>Short Demo Video:</b>
 
-https://github.com/igorlogius/find-in-tabs/assets/67047467/cb5cecb7-b8da-49c6-bf58-6318ef1da236
+https://github.com/igorlogius/find-in-tabs/assets/67047467/d3a2ff08-5ac7-4e9e-8fcc-66578700a890
 
 <b>Usage/Features:</b>
 <ul>

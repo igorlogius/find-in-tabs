@@ -29,4 +29,7 @@ https://github.com/igorlogius/find-in-tabs/assets/67047467/d3a2ff08-5ac7-4e9e-8f
     <li>
         Pressing enter when focus is on the search inputs, will switch to the first tab, jump to the first hit and highlight all hits on the page
     </li>
+    <li>
+        Use the 3rd checkbox to enable regex mode, which allows to search using JS regular expressions 
+    </li>
 </ul>

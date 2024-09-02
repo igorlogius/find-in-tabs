@@ -221,7 +221,7 @@
                 encodeHTMLEntities(hit.left) +
                 "<b><span style='background:#ffcc6c'>" +
                 encodeHTMLEntities(
-                  caseSensitive ? searchedVal : searchedVal.toUpperCase()
+                  caseSensitive ? searchedVal : searchedVal.toUpperCase(),
                 ) +
                 "</span></b>" +
                 encodeHTMLEntities(hit.right) +
@@ -264,7 +264,19 @@
   }
 
   /**/
-  function createDocumentListener() {
+  async function createDocumentListener() {
+    if (await browser.sidebarAction.isOpen({})) {
+      document.getElementById("detach").style.display = "none";
+    }
+
+    document.getElementById("detach").addEventListener(
+      "click",
+      function (event) {
+        browser.sidebarAction.open();
+        window.close();
+      },
+      false,
+    );
     // prevent cursor from jumping to the front and back
     document.getElementById("searchField").addEventListener(
       "keydown",
@@ -278,7 +290,7 @@
           return false;
         }
       },
-      false
+      false,
     );
     // change max hits via arrow keys
     document.getElementById("searchField").addEventListener(
@@ -306,7 +318,7 @@
           }
         }
       },
-      false
+      false,
     );
   }
   /**/

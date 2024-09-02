@@ -30,7 +30,7 @@ browser.runtime.onMessage.addListener((request, sender) => {
       let left = text.slice(idx - 22 > 0 ? idx - 22 : 0, idx);
       let right = text.slice(
         idx + request.message.length,
-        idx + request.message.length + 22
+        idx + request.message.length + 22,
       );
       hits.push({ left, right });
     }
@@ -133,12 +133,26 @@ function updateCache() {
     " " +
     document.title +
     " " +*/
-    document.body.innerText.replace(/\s+/g, " ");
+    //document.body.innerText.replace(/\s+/g, " ");
+    getVisibleText(document.body).replace(/\s+/g, " ");
 }
 
 function delayed_onChange() {
   clearTimeout(timerID);
   timerID = setTimeout(updateCache, 500);
+}
+
+function getVisibleText(element) {
+  window.getSelection().removeAllRanges();
+
+  let range = document.createRange();
+  range.selectNode(element);
+  window.getSelection().addRange(range);
+
+  let visibleText = window.getSelection().toString(); // .trim();
+  window.getSelection().removeAllRanges();
+
+  return visibleText;
 }
 
 function init() {

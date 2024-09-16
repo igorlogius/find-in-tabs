@@ -11,12 +11,12 @@ browser.runtime.onMessage.addListener((request, sender) => {
   if (request.cmd === "search") {
     let searchStr = request.message;
     let text = "";
+    text = getVisibleText(document.body).replace(/\s+/g, " ");
+
     if (!request.accentSensitive) {
       // ignore diracritics in searchbox too
       searchStr = searchStr.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      text = cached_page_text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    } else {
-      text = cached_page_text;
+      text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
     if (!request.caseSensitive) {
@@ -127,20 +127,24 @@ function getIdxsOf(searchStr, str, maxhits) {
   return idxs;
 }
 
+/*
 function updateCache() {
   cached_page_text =
-    /*document.URL +
+    document.URL +
     " " +
     document.title +
-    " " +*/
+    " " +
     //document.body.innerText.replace(/\s+/g, " ");
     getVisibleText(document.body).replace(/\s+/g, " ");
 }
+*/
 
+/*
 function delayed_onChange() {
   clearTimeout(timerID);
   timerID = setTimeout(updateCache, 500);
 }
+*/
 
 function getVisibleText(element) {
   window.getSelection().removeAllRanges();
@@ -155,6 +159,7 @@ function getVisibleText(element) {
   return visibleText;
 }
 
+/*
 function init() {
   if (document.body) {
     new MutationObserver(delayed_onChange).observe(document.body, {
@@ -165,6 +170,8 @@ function init() {
     delayed_onChange();
   }
 }
+*/
 
 // inital delay
-init();
+//init();
+

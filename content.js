@@ -2,6 +2,8 @@
 
 let cached_page_text = "";
 let timerID = null;
+let cacheOutdatedTime = 30 * 1000; // 30 seconds
+let lastCacheUpdateTime = null;
 
 browser.runtime.onMessage.addListener((request, sender) => {
   if (request.cmd === "scroll") {
@@ -11,7 +13,18 @@ browser.runtime.onMessage.addListener((request, sender) => {
   if (request.cmd === "search") {
     let searchStr = request.message;
     let text = "";
-    text = getVisibleText(document.body).replace(/\s+/g, " ");
+
+    // Update the text cache when the last request is older then 30 seconds
+    // Why 30 seconds? Well that seems like a reasonable time ... :-)
+    const now = Date.now();
+    if (
+      lastCacheUpdateTime === null ||
+      now > lastCacheUpdateTime + cacheOutdatedTime
+    ) {
+      cached_page_text = getVisibleText(document.body).replace(/\s+/g, " ");
+      lastCacheUpdateTime = now;
+    }
+    text = cached_page_text;
 
     if (!request.accentSensitive) {
       // ignore diracritics in searchbox too
@@ -52,31 +65,6 @@ browser.runtime.onMessage.addListener((request, sender) => {
     return Promise.resolve({ hits });
   }
 });
-
-function stripAccents(str) {
-  const rExps = [
-    { re: /[\xC0-\xC6]/g, ch: "A" },
-    { re: /[\xE0-\xE6]/g, ch: "a" },
-    { re: /[\xC8-\xCB]/g, ch: "E" },
-    { re: /[\xE8-\xEB]/g, ch: "e" },
-    { re: /[\xCC-\xCF]/g, ch: "I" },
-    { re: /[\xEC-\xEF]/g, ch: "i" },
-    { re: /[\xD2-\xD6]/g, ch: "O" },
-    { re: /[\xF2-\xF6]/g, ch: "o" },
-    { re: /[\xD9-\xDC]/g, ch: "U" },
-    { re: /[\xF9-\xFC]/g, ch: "u" },
-    { re: /[\xD1]/g, ch: "N" },
-    { re: /[\xF1]/g, ch: "n" },
-  ];
-
-  str = str.normalize();
-
-  for (const rexp of rExps) {
-    str = str.replace(rexp.re, rexp.ch);
-  }
-
-  return str;
-}
 
 function getStartEndIdxs(regexStr, str, maxhits) {
   let out_idx_groups = [];
@@ -127,25 +115,6 @@ function getIdxsOf(searchStr, str, maxhits) {
   return idxs;
 }
 
-/*
-function updateCache() {
-  cached_page_text =
-    document.URL +
-    " " +
-    document.title +
-    " " +
-    //document.body.innerText.replace(/\s+/g, " ");
-    getVisibleText(document.body).replace(/\s+/g, " ");
-}
-*/
-
-/*
-function delayed_onChange() {
-  clearTimeout(timerID);
-  timerID = setTimeout(updateCache, 500);
-}
-*/
-
 function getVisibleText(element) {
   window.getSelection().removeAllRanges();
 
@@ -153,25 +122,8 @@ function getVisibleText(element) {
   range.selectNode(element);
   window.getSelection().addRange(range);
 
-  let visibleText = window.getSelection().toString(); // .trim();
+  let visibleText = window.getSelection().toString();
   window.getSelection().removeAllRanges();
 
   return visibleText;
 }
-
-/*
-function init() {
-  if (document.body) {
-    new MutationObserver(delayed_onChange).observe(document.body, {
-      attributes: false,
-      childList: true,
-      subtree: true,
-    });
-    delayed_onChange();
-  }
-}
-*/
-
-// inital delay
-//init();
-

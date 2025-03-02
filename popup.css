@@ -1,9 +1,9 @@
 body {
   padding: 0.5em;
   background-color: lightgray;
-  width: 500px;
   /*max-height:400px;*/
   /*overflow: hidden;*/
+  width: 500px;
 }
 
 #resultlist {

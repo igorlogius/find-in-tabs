@@ -15,3 +15,11 @@ browser.menus.create({
     });
   },
 });
+
+browser.runtime.onInstalled.addListener(async (details) => {
+  if (details.reason === "install") {
+    let tmp = await fetch(browser.runtime.getURL("popup.css"));
+    tmp = await tmp.text();
+    browser.storage.local.set({ styles: tmp });
+  }
+});

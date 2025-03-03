@@ -1,4 +1,20 @@
 (async () => {
+  async function getFromStorage(type, id, fallback) {
+    let tmp = await browser.storage.local.get(id);
+    return typeof tmp[id] === type ? tmp[id] : fallback;
+  }
+
+  const fallback_styles = (async () => {
+    let tmp = await fetch(browser.runtime.getURL("popup.css"));
+    return await tmp.text();
+  })();
+
+  const styles = await getFromStorage("string", "styles", fallback_styles);
+
+  let styleSheet = document.createElement("style");
+  styleSheet.innerText = styles;
+  document.head.appendChild(styleSheet);
+
   const template = document.getElementById("li_template");
   const elements = new Set();
   // const collator = new Intl.Collator();
@@ -13,11 +29,6 @@
     status: "complete",
     discarded: false,
   });
-
-  async function getFromStorage(type, id, fallback) {
-    let tmp = await browser.storage.local.get(id);
-    return typeof tmp[id] === type ? tmp[id] : fallback;
-  }
 
   async function setToStorage(id, value) {
     let obj = {};

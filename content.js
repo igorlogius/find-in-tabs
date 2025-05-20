@@ -1,4 +1,4 @@
-// This sript is executed on each tab while typing the search
+// This script is executed on each tab while typing the search
 
 let cached_page_text = "";
 let timerID = null;
@@ -27,7 +27,7 @@ browser.runtime.onMessage.addListener((request, sender) => {
     text = cached_page_text;
 
     if (!request.accentSensitive) {
-      // ignore diracritics in searchbox too
+      // ignore diacritics in searchbox too
       searchStr = searchStr.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
       text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
